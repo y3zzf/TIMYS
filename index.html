@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка Артиста — TIMYS</title>
+    <style>
+        /* Сброс стилей и общие настройки */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #060b13; /* Очень глубокий темный фон */
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        /* Главный контейнер карточки */
+        .artist-card {
+            background-color: #030710;
+            border: 2px solid rgba(0, 162, 255, 0.25);
+            max-width: 1050px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 183, 255, 0.1);
+            padding: 30px;
+            gap: 30px;
+            margin: auto 0; /* Обеспечивает центровку внутри body */
+        }
+
+        /* Левая часть: информация и описание */
+        .artist-info {
+            flex: 1.1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Заголовок (Артист + Имя + QR-код напротив) */
+        .artist-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .artist-role {
+            font-size: 0.85rem;
+            color: #00e1d9; /* Неоновый бирюзовый */
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .artist-name {
+            font-size: 3.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        /* Контейнер для QR-кода */
+        .qr-wrapper {
+            width: 110px;
+            height: 110px;
+            border: 2px solid #00e1d9;
+            border-radius: 12px;
+            padding: 8px;
+            background-color: transparent;
+            box-shadow: 0 0 15px rgba(0, 225, 217, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .qr-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: invert(1) hue-rotate(140deg) brightness(1.2); /* Неоновый эффект */
+        }
+
+        /* Таблица с характеристиками */
+        .stats-container {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .stats-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            align-items: center;
+        }
+
+        .stats-label {
+            font-size: 0.8rem;
+            color: #52667d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .stats-value {
+            font-size: 0.95rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        /* Краткое описание */
+        .artist-description {
+            font-size: 0.95rem;
+            color: #8c9ba5;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            border-left: 3px solid #00e1d9;
+            padding-left: 15px;
+        }
+
+        /* Секция социальных сетей */
+        .socials-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .socials-label {
+            font-size: 0.8rem;
+            color: #00e1d9;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .socials-icons {
+            display: flex;
+            gap: 18px;
+        }
+
+        .socials-icons a {
+            color: #00e1d9;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .socials-icons a:hover {
+            transform: translateY(-3px);
+            filter: drop-shadow(0 0 8px #00e1d9);
+            color: #ffffff;
+        }
+
+        .socials-icons svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Правая часть: фото артиста в неоновой рамке */
+        .artist-image-frame {
+            flex: 1;
+            max-width: 480px;
+            background-color: #02050b;
+            border: 2px solid rgba(0, 225, 217, 0.4);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 0 35px rgba(0, 225, 217, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .artist-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        /* Футер копирайта */
+        .artist-footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0 10px;
+            color: rgba(0, 225, 217, 0.6);
+            font-size: 13px;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: auto; /* Позволяет футеру быть в самом низу */
+        }
+
+        /* Адаптивный дизайн */
+        @media (max-width: 900px) {
+            .artist-card {
+                flex-direction: column;
+                padding: 20px;
+                gap: 25px;
+            }
+
+            .artist-image-frame {
+                max-width: 100%;
+                height: 480px;
+                order: -1; /* Фото уходит наверх */
+            }
+
+            .artist-name {
+                font-size: 3rem;
+            }
+        }
+
+        /* Тонкая настройка для экранов смартфонов */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .artist-card {
+                padding: 15px;
+                gap: 20px;
+            }
+
+            .artist-image-frame {
+                height: 320px; /* Уменьшаем высоту фото на маленьких экранах */
+            }
+
+            .artist-header-container {
+                flex-direction: row; /* Оставляем QR сбоку, чтобы не занимать много места по вертикали */
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .qr-wrapper {
+                width: 75px;
+                height: 75px;
+                padding: 5px;
+            }
+
+            .artist-name {
+                font-size: 2.2rem;
+            }
+
+            .artist-description {
+                font-size: 0.9rem;
+                padding-left: 10px;
+            }
+
+            .stats-row {
+                padding: 12px 0;
+            }
+
+            .stats-label {
+                font-size: 0.75rem;
+            }
+
+            .stats-value {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="artist-card">
+        
+        <div class="artist-info">
+            <div class="artist-header-container">
+                <div class="artist-header">
+                    <div class="artist-role">Артист</div>
+                    <div class="artist-name">TIMYS</div>
+                </div>
+                
+                <div class="qr-wrapper">
+                    <img src="https://genqrcode.com/embedded?style=0&inner_eye_style=0&outer_eye_style=0&logo=null&color=%23000000FF&background_color=%23FFFFFFFF&inner_eye_color=%23000000&outer_eye_color=%23000000&imageformat=svg&language=en&frame_style=0&frame_text=SCAN%20ME&frame_text_icon_color=%23000000&frame_text_icon=null&frame_color=%23000000&frame_background_color=%23FFFFFF&frame_text_color=%23FFFFFF&invert_colors=false&gradient_style=0&gradient_color_start=%23FF0000&gradient_color_end=%237F007F&gradient_start_offset=5&gradient_end_offset=95&stl_type=1&logo_remove_background=null&stl_size=100&stl_qr_height=1.5&stl_base_height=2&stl_include_stands=false&stl_qr_magnet_type=3&stl_qr_magnet_count=0&type=0&text=https%3A%2F%2Fmusic.yandex.ru%2Fartist%2F23893812%3Futm_source=desktop%26utm_medium=copy_link&width=500&height=500&bordersize=2" alt="qr code" />
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stats-row">
+                    <span class="stats-label">AGE</span>
+                    <span class="stats-value">18</span>
+                </div>
+                <div class="stats-row">
+                    <span class="stats-label">COUNTRY</span>
+                    <span class="stats-value">Россия</span>
+                </div>
+                <div class="stats-row">
+                    <span class="stats-label">CITY</span>
+                    <span class="stats-value">Челябинск</span>
+                </div>
+            </div>
+
+            <div class="artist-description">
+                Тимур Ефанов.<br>
+Революция в кармане. Хиты «Риск», «Тихая роскошь», «Хватит ли сил» уже разлетелись на цитаты. Слышал? Если нет - слушай, пока твои друзья не переключили трек вперед.
+            </div>
+
+            <div class="socials-section">
+                <div class="socials-label">SOCIALS</div>
+                <div class="socials-icons">
+
+                    <a href="https://vk.com/damznatosebe" target="_blank" title="VK">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M23.45 5.948c.166-.543 0-.948-.785-.948h-2.594c-.66 0-.966.347-1.127.737 0 0-1.32 3.18-3.188 5.242-.604.598-.88.787-1.21.787-.165 0-.414-.189-.414-.732V5.947c0-.653-.182-.947-.73-.947H9.29c-.413 0-.66.307-.66.598 0 .619.932.76 1.026 2.493v3.766c0 .825-.15 1.72-.88 1.72-.593 0-2.036-3.2-2.89-6.864-.25-.647-.474-.905-1.139-.905H2.183c-.742 0-.89.347-.89.737 0 .69 1.13 4.162 4.146 8.35C7.447 17.568 9.873 19 12.08 19c1.326 0 1.49-.296 1.49-.806v-2.31c0-.591.125-.71.554-.71.314 0 .853.15 2.11 1.353 1.436 1.424 1.673 2.473 2.473 2.473h2.594c.742 0 1.112-.347.897-1.077-.234-.717-1.066-1.758-2.176-3.003-.604-.683-.883-1.125-.262-1.84.14-.165 1.252-1.196 2.413-2.695.127-.142.235-.236 0-.94z"/>
+                        </svg>
+                    </a>
+
+                    <a href="https://t.me/timysmusic" target="_blank" title="Telegram">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.294.294-.605.294l.213-3.05 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.536-.195.998.124.815.981z"/>
+                        </svg>
+                    </a>
+
+                    <a href="https://www.tiktok.com/@timysmusics" target="_blank" title="TikTok">
+                         <svg viewBox="0 0 24 24">
+                             <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.229h-3.084v13.677c0 1.554-1.26 2.815-2.815 2.815s-2.815-1.26-2.815-2.815 1.26-2.815 2.815-2.815c.288 0 .565.045.826.127V10.31a5.94 5.94 0 0 0-.826-.058A5.94 5.94 0 0 0 4 16.192 5.94 5.94 0 0 0 9.94 22.13a5.94 5.94 0 0 0 5.94-5.939V9.54a7.84 7.84 0 0 0 4.709 1.565V8.021a4.8 4.8 0 0 1-1-.335z"/>
+                         </svg>
+                    </a>
+
+                    <a href="https://www.youtube.com/@timysnaprovode" target="_blank" title="YouTube">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="artist-image-frame">
+            <img src="https://cdn.phototourl.com/free/2026-05-03-0c5aabc5-36f0-4772-87e4-12394164321f.png" alt="TIMYS">
+        </div>
+
+    </div>
+
+    <footer class="artist-footer">
+        &copy; 2026 TIMYS.
+    </footer>
+
+</body>
+</html>
